@@ -1,0 +1,27 @@
+{
+  "name": "express-knight-chess-moves",
+  "version": "1.0.0",
+  "description": "Node.js Api built with express to validate knight chess moves",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lumadev/express-knight-chess-moves.git"
+  },
+  "keywords": [
+    "Node.js",
+    "Express",
+    "PostgreSQL"
+  ],
+  "author": "Luma Macagnan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lumadev/express-knight-chess-moves/issues"
+  },
+  "homepage": "https://github.com/lumadev/express-knight-chess-moves#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
