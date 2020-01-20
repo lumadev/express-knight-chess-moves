@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const routes = require('./routes');
 
 const app = express();
 
@@ -14,7 +15,6 @@ const algebricCoordinates = [];
 const numberCoordinates = [];
 
 initAlgebricCoordinates();
-getPossibleMoves('A', '8');
 
 function initAlgebricCoordinates() {
   const lettersAlgebric = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
@@ -116,39 +116,83 @@ function isPossibleMove(x, y) {
 }
 
 function getPossibleMoves(xAlgebric, yAlgebric) {
-  const coordinates = covertCoordinates(xAlgebric, yAlgebric);
+  const coordinates = covertToNumberCoordinate(xAlgebric, yAlgebric);
+
+  if (coordinates === undefined) {
+    throw new Error('Wrong coordinates');
+  }
+
   const x = parseInt(coordinates.substr(0, 1));
   const y = parseInt(coordinates.substr(1, 2));
 
   const allMoves = checkPossibleMoves(x, y);
   const allowedMoves = allMoves.filter((res) => res.isPossible === true);
-  // const allowedMovesSecondTurn = checkPossiblemovesSecondTurn(allowedMoves)
+
+  return convertMovesToAlgebric(allowedMoves);
 }
 
-// function checkPossiblemovesSecondTurn(allowedMoves) {
-//   const possibleCombinations = [];
-//
-//   allowedMoves.forEach((moveInfo) => {
-//     const x = moveInfo.x;
-//     const y = moveInfo.y;
-//
-//     const possibleCombination = checkPossibleMoves(x, y, true);
-    // possibleCombinations.push(possibleCombination);
+function getPossibleMovesSecondTurn(allowedCoordinates) {
+  const movesList = [];
 
-  //   console.log(possibleCombination);
-  // });
-  // return possibleCombinations;
-// }
+  allowedCoordinates = convertCoordinatesToNumber(allowedCoordinates);
 
-function covertCoordinates(xAlgebric, yAlgebric) {
-  const coordinateUser = `${xAlgebric}${yAlgebric}`;
-  return algebricCoordinates[coordinateUser];
+  allowedCoordinates.forEach((coordinate) => {
+    const x = parseInt(coordinate.substr(0, 1));
+    const y = parseInt(coordinate.substr(1, 2));
+
+    const allMoves = checkPossibleMoves(x, y);
+
+    allMoves.forEach((move) => {
+      movesList.push(move);
+    })
+  });
+
+  const allowedMoves = movesList.filter((res) => res.isPossible === true);
+  const algebricElements = convertMovesToAlgebric(allowedMoves);
+
+  /** remove duplicated elements */
+  return [...new Set(algebricElements)];
 }
 
-app.post('/possible-moves', (req, res) => {
-  const cellName = req.body.cellName;
+function convertCoordinatesToNumber(coordinates) {
+  const numbersCoordinates = [];
 
-  if (cellName === undefined) {
+  coordinates.forEach((coordinate) => {
+    const converted = algebricCoordinates[coordinate];
+    numbersCoordinates.push(converted);
+  });
+  return numbersCoordinates;
+}
+
+function convertMovesToAlgebric(moves) {
+  const algebricCoordinates = [];
+
+  moves.forEach((move) => {
+    const x = move.x;
+    const y = move.y;
+
+    const algebricCoordinate = covertToAlgebricCoordinate(x, y);
+
+    algebricCoordinates.push(algebricCoordinate);
+  });
+
+  return algebricCoordinates;
+}
+
+function covertToNumberCoordinate(xAlgebric, yAlgebric) {
+  const coordinate = `${xAlgebric}${yAlgebric}`;
+  return algebricCoordinates[coordinate];
+}
+
+function covertToAlgebricCoordinate(xNumber, yNumber) {
+  const coordinate = `${xNumber}${yNumber}`;
+  return numberCoordinates[coordinate];
+}
+
+app.post('/move/possible-moves', (req, res) => {
+  const coordinate = req.body.coordinate;
+
+  if (coordinate === undefined) {
     res.status(500).json({ error: 'Please pass the cell name on the request' })
   }
 
@@ -159,13 +203,24 @@ app.post('/possible-moves', (req, res) => {
     res.status(500).json({ error: 'Please use algebric notation!' })
   }
 
-  const xAlgebric = cellName.substr(0, 1);
-  const yAlgebric = cellName.substr(1, 2);
+  const xAlgebric = coordinate.substr(0, 1);
+  const yAlgebric = coordinate.substr(1, 2);
 
-  // getPossibleMoves(xAlgebric, yAlgebric);
+  const moves = getPossibleMoves(xAlgebric, yAlgebric);
 
-  // res.send('go to sleep a little bit');
-})
+  res.send({ moves });
+});
+
+app.post('/move/second-turn-moves', (req, res) => {
+  const moves = req.body.moves;
+
+  if (moves === undefined) {
+    res.status(500).json({ error: 'Please pass the moves on the request' })
+  }
+  const secondTurnMoves = getPossibleMovesSecondTurn(moves);
+
+  res.send({ moves: secondTurnMoves });
+});
 
 app.post('/move', (req, res) => {
   // TODO implementar para salvar na database
