@@ -217,7 +217,7 @@ router.post('/move/second-turn-moves', (req, res) => {
 });
 
 router.post('/move', (req, res) => {
-  // TODO implementar para salvar na database
+  // TODO implement to save on database
 });
 
 module.exports = router;
