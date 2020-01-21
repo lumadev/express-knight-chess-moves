@@ -10,6 +10,13 @@ const numberCoordinates = [];
 
 initAlgebricCoordinates();
 
+/**
+ * Initialize coordinates mapping two arrays for algebric notation coversion
+ * and number format conversion
+ *
+ * For algebricCoordinates['A8'] it will give '11' coordinates
+ * For numberCoordinates['12'] it will give 'B8' coordinates
+ */
 function initAlgebricCoordinates() {
   const lettersAlgebric = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
   const numbersAlgebric = ['8', '7', '6', '5', '4', '3', '2', '1'];
@@ -32,6 +39,11 @@ function initAlgebricCoordinates() {
   }
 }
 
+/**
+ * Knight combinations are mapped (on numeric)
+ * to check possible combinations
+ * @returns {*[]}
+ */
 function getKnightCombinations(x, y) {
   const xMinus1 = x - 1;
   const xPlus1 = x + 1;
@@ -87,6 +99,10 @@ function getKnightCombinations(x, y) {
   ];
 }
 
+/**
+ * Check possible moves based on kight combinations
+ * @returns {Array}
+ */
 function checkPossibleMoves(x, y) {
   const knightCombinations = getKnightCombinations(x, y);
   const possibleCombinations = [];
@@ -109,6 +125,10 @@ function isPossibleMove(x, y) {
   return possible;
 }
 
+/**
+ * Get all allowed moves based on the given algebric coordinate
+ * @returns {Array}
+ */
 function getPossibleMoves(xAlgebric, yAlgebric) {
   const coordinates = covertToNumberCoordinate(xAlgebric, yAlgebric);
 
@@ -125,6 +145,10 @@ function getPossibleMoves(xAlgebric, yAlgebric) {
   return convertMovesToAlgebric(allowedMoves);
 }
 
+/**
+ * Get all allowed moves based on the allowedCoordinates array
+ * @returns {any[]}
+ */
 function getPossibleMovesSecondTurn(allowedCoordinates) {
   const movesList = [];
 
@@ -148,6 +172,9 @@ function getPossibleMovesSecondTurn(allowedCoordinates) {
   return [...new Set(algebricElements)];
 }
 
+/**
+ * Converts a number coordinate to algebric
+ */
 function convertCoordinatesToNumber(coordinates) {
   const numbersCoordinates = [];
 
