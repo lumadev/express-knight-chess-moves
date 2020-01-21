@@ -6,11 +6,7 @@
 #Run tests
 - Run ``npm test``
 
-#Project Structure
+#Project Structure<br/>
 src <br/>
-&nbsp;&nbsp; assets<br/>
-&nbsp;&nbsp; components<br/>
-&nbsp;&nbsp; shared 
-
-- *Assets from components are located on assets folder*
-- *Shared componets are located on shared folder*
+&nbsp;&nbsp; controllers<br/>
+&nbsp;&nbsp; models<br/>
