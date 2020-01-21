@@ -129,8 +129,8 @@ function isPossibleMove(x, y) {
  * Get all allowed moves based on the given algebric coordinate
  * @returns {Array}
  */
-function getPossibleMoves(xAlgebric, yAlgebric) {
-  const coordinates = covertToNumberCoordinate(xAlgebric, yAlgebric);
+router.getPossibleMoves = (xAlgebric, yAlgebric) => {
+  const coordinates = router.covertToNumberCoordinate(xAlgebric, yAlgebric);
 
   if (coordinates === undefined) {
     throw new Error('Wrong coordinates');
@@ -149,7 +149,7 @@ function getPossibleMoves(xAlgebric, yAlgebric) {
  * Get all allowed moves based on the allowedCoordinates array
  * @returns {any[]}
  */
-function getPossibleMovesSecondTurn(allowedCoordinates) {
+router.getPossibleMovesSecondTurn = (allowedCoordinates) => {
   const movesList = [];
 
   allowedCoordinates = convertCoordinatesToNumber(allowedCoordinates);
@@ -172,9 +172,6 @@ function getPossibleMovesSecondTurn(allowedCoordinates) {
   return [...new Set(algebricElements)];
 }
 
-/**
- * Converts a number coordinate to algebric
- */
 function convertCoordinatesToNumber(coordinates) {
   const numbersCoordinates = [];
 
@@ -192,7 +189,7 @@ function convertMovesToAlgebric(moves) {
     const x = move.x;
     const y = move.y;
 
-    const algebricCoordinate = covertToAlgebricCoordinate(x, y);
+    const algebricCoordinate = router.covertToAlgebricCoordinate(x, y);
 
     algebricCoordinates.push(algebricCoordinate);
   });
@@ -200,12 +197,12 @@ function convertMovesToAlgebric(moves) {
   return algebricCoordinates;
 }
 
-function covertToNumberCoordinate(xAlgebric, yAlgebric) {
+router.covertToNumberCoordinate = (xAlgebric, yAlgebric) => {
   const coordinate = `${xAlgebric}${yAlgebric}`;
   return algebricCoordinates[coordinate];
 }
 
-function covertToAlgebricCoordinate(xNumber, yNumber) {
+router.covertToAlgebricCoordinate = (xNumber, yNumber) => {
   const coordinate = `${xNumber}${yNumber}`;
   return numberCoordinates[coordinate];
 }
@@ -227,7 +224,7 @@ router.post('/move/possible-moves', (req, res) => {
   const xAlgebric = coordinate.substr(0, 1);
   const yAlgebric = coordinate.substr(1, 2);
 
-  const moves = getPossibleMoves(xAlgebric, yAlgebric);
+  const moves = router.getPossibleMoves(xAlgebric, yAlgebric);
 
   res.send({ moves });
 });
@@ -238,7 +235,7 @@ router.post('/move/second-turn-moves', (req, res) => {
   if (moves === undefined) {
     res.status(500).json({ error: 'Please pass the moves on the request' })
   }
-  const secondTurnMoves = getPossibleMovesSecondTurn(moves);
+  const secondTurnMoves = router.getPossibleMovesSecondTurn(moves);
 
   res.send({ moves: secondTurnMoves });
 });
@@ -246,5 +243,6 @@ router.post('/move/second-turn-moves', (req, res) => {
 router.post('/move', (req, res) => {
   // TODO implement to save on database
 });
+
 
 module.exports = router;
