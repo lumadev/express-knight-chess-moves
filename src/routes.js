@@ -1,6 +1,6 @@
+import { Router } from 'express'
 
-var express = require('express');
-var router = express.Router();
+const router = Router()
 
 /** to be used to conversion to number coordinates */
 const algebricCoordinates = [];
@@ -244,5 +244,4 @@ router.post('/move', (req, res) => {
   // TODO implement to save on database
 });
 
-
-module.exports = router;
+export default router
